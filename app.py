@@ -54,4 +54,4 @@ if __name__ == "__main__":
 
 =======
     # Cette structure peut être étendue pour ajouter d'autres onglets à l'application 
->>>>>>> cffc976024926b7fc4a558ce209470d5cbd2fb83
+>>>>>>> cffc976024926b7fc4a558ce209470d5cbd2fb83 
