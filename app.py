@@ -33,38 +33,33 @@ def display_organisations_engagees():
         df = df[["Nom", "Commune", "Section NAF", "Effectif", "Action RSE"]]
         st.dataframe(df, width=None, height=None)
 
-# Fonction pour afficher la carte ou les données géographiques
-def display_map(items):
-    for item in items:
-        try:
-            # Vérifie si 'point_geo' existe et contient 'lat'
-            if 'point_geo' in item and 'lat' in item['point_geo']:
-                lat_value = item['point_geo']['lat']
-                if lat_value:  # Si 'lat' n'est pas vide, tente de convertir en float
-                    lat = float(lat_value)
-                    st.write(f"Latitude: {lat}")
-                else:  # Si 'lat' est vide
-                    st.error(f"La latitude est vide pour l'item: {item}")
-            else:  # Si 'point_geo' ou 'lat' est absent
-                st.error(f"Données géographiques incomplètes ou absentes pour l'item: {item}")
-        except ValueError as e:
-            # Si la conversion en float échoue
-            st.error(f"Erreur lors de la conversion de la latitude pour l'item: {item}. Erreur: {e}")
+# Fonction pour afficher la carte
+def display_map():
+    data, _ = get_data()
+    if data:
+        m = folium.Map(location=[44.84474, -0.60711], zoom_start=12)
+        for item in data:
+            if 'point_geo' in item and item['point_geo']:
+                lat = float(item['point_geo']['lat'])
+                lon = float(item['point_geo']['lon'])
+                folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
+        folium_static(m)
 
+# Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
+def display_dialogue():
+    st.markdown("# Patientez quelques heures encore... :)")
+
+# Main function orchestrating the app UI
 def main():
-    # Création d'une simple interface utilisateur pour afficher les latitudes
-    st.title('Affichage des données géographiques')
+    st.sidebar.title("Navigation")
+    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Carte", "Dialoguer avec l'assistant IA RSE bziiit"])
 
-    # Simuler des données d'entrée avec différents cas
-    items = [
-        {'name': 'Location A', 'point_geo': {'lat': '48.8566', 'lon': '2.3522'}},
-        {'name': 'Location B', 'point_geo': {'lat': '', 'lon': '2.3522'}},  # Cet élément aura une latitude vide
-        {'name': 'Location C'},  # Cet élément manquera de données géographiques
-        {'name': 'Location D', 'point_geo': {'lat': 'not_a_float', 'lon': '2.3522'}}  # Cet élément aura une erreur de conversion
-    ]
-    
-    # Appel de la fonction pour afficher les données
-    display_map(items)
+    if app_mode == "Organisations engagées":
+        display_organisations_engagees()
+    elif app_mode == "Carte":
+        display_map()
+    elif app_mode == "Dialoguer avec l'assistant IA RSE bziiit":
+        display_dialogue()
 
 if __name__ == "__main__":
     main()
