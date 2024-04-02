@@ -49,4 +49,4 @@ if __name__ == "__main__":
     app_mode = st.sidebar.selectbox("Choisissez l'onglet", ["Organisations engagées", "Autre Onglet"])
 
     if app_mode == "Organisations engagées":
-        display_organisations_engagees()
+        display_organisations_engagees() 
