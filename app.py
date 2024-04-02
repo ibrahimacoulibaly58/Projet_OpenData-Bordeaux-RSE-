@@ -40,22 +40,19 @@ def display_map():
         m = folium.Map(location=[44.84474, -0.60711], zoom_start=12)
         for item in data:
             try:
-                # Assumant que 'point_geo' est une liste [lon, lat]
+                # Supposons que 'point_geo' est une liste [lat, lon]
                 point_geo = item.get('point_geo', [])
                 if point_geo:
-                    # Extraction de lon et lat par indexation de la liste
-                    lon, lat = point_geo
+                    # Extraction de lat et lon par indexation de la liste, en supposant l'ordre correct [lat, lon]
+                    lat, lon = point_geo
                     lat, lon = float(lat), float(lon)
                     # Vérification que lat et lon sont valides
                     if lat and lon:
                         folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
             except (ValueError, TypeError, IndexError):
-                # Cette exception attrape les erreurs de conversion en float,
-                # les cas où point_geo n'est pas dans le format attendu,
-                # ou les index ne sont pas présents dans la liste
+                # Gestion des erreurs pour la conversion en float, format de données inattendu, ou index manquant
                 continue
         folium_static(m)
-
 
 # Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
 def display_dialogue():
