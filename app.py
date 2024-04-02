@@ -57,4 +57,4 @@ if __name__ == "__main__":
     # Affichage de l'onglet "Organisations engagées" si sélectionné
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
-    # Cette structure peut être étendue pour ajouter d'autres onglets à l'application
+    # Cette structure peut être étendue pour ajouter d'autres onglets à l'application 
