@@ -1,60 +1,53 @@
-# Importation des bibliothèques nécessaires
 import streamlit as st
 import pandas as pd
 import requests
 
-# Fonction pour récupérer les données de l'API
-def get_data():
+def get_data(page, rows_per_page=25):
     """
-    Cette fonction effectue une requête GET vers l'API spécifiée et retourne une liste des enregistrements (records).
-    Elle utilise l'URL de l'API pour récupérer les données des établissements engagés dans la RSE à Bordeaux.
-    La fonction gère également les éventuelles erreurs de requête.
+    Récupère les données paginées de l'API.
     
+    Args:
+        page (int): Numéro de la page à récupérer.
+        rows_per_page (int): Nombre de lignes par page.
+        
     Returns:
-        List[Dict]: Une liste de dictionnaires où chaque dictionnaire représente les données d'un établissement.
+        List[Dict]: Données de la page spécifiée sous forme de liste de dictionnaires.
     """
-    # URL de l'API pour accéder aux données des établissements RSE
-    url = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=met_etablissement_rse&q=&rows=100"
-    # Envoi de la requête GET à l'API
+    # Construction de l'URL avec pagination
+    url = f"https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=met_etablissement_rse&q=&rows={rows_per_page}&start={page * rows_per_page}"
     response = requests.get(url)
-    # Vérification du statut de la réponse
     if response.status_code == 200:
-        # Conversion de la réponse en JSON
         data = response.json()
-        # Récupération des enregistrements (records) depuis la réponse
         records = data.get("records", [])
-        # Extraction des champs (fields) de chaque enregistrement
-        return [record["fields"] for record in records]
+        return [record["fields"] for record in records], data.get("nhits", 0)
     else:
-        # Retourne une liste vide si la requête échoue
-        return []
+        return [], 0
 
-# Fonction pour afficher les organisations engagées dans l'application Streamlit
 def display_organisations_engagees():
     """
-    Cette fonction récupère les données des organisations engagées via la fonction `get_data`, les convertit en un DataFrame pandas,
-    puis utilise Streamlit pour les afficher dans un tableau sur l'interface utilisateur.
+    Affiche les organisations engagées avec pagination et colonnes réordonnées.
     """
-    # Récupération des données via la fonction get_data
-    data = get_data()
-    # Vérification si des données ont été récupérées
+    # Pagination
+    page_number = st.sidebar.number_input("Page number", min_value=0, value=0, step=1)
+    data, total_hits = get_data(page_number)
+    
     if data:
-        # Conversion des données en DataFrame pandas pour une manipulation et un affichage plus faciles
         df = pd.DataFrame(data)
-        # Affichage du DataFrame dans l'application Streamlit
-        st.write("Organisations engagées", df)
+        # Réordonner les colonnes selon la spécification
+        cols_order = ["nom_courant_denomination", "tranche_effectif_entreprise", "commune", "hierarchie_naf", "action_rse"]
+        # Filtre les colonnes pour s'assurer qu'elles existent dans les données
+        cols_order = [col for col in cols_order if col in df.columns]
+        df = df[cols_order]
+        
+        # Affichage des données avec les colonnes réordonnées
+        st.write(f"Organisations engagées - Page {page_number + 1} sur {((total_hits - 1) // 25) + 1}", df)
     else:
-        # Message d'erreur en cas d'absence de données
         st.write("Aucune donnée disponible.")
 
-# Point d'entrée principal de l'application Streamlit
 if __name__ == "__main__":
-    # Configuration de la barre latérale pour la navigation entre différents onglets
     st.sidebar.title("Navigation")
-    # Option de sélection pour les différents onglets de l'application
     app_mode = st.sidebar.selectbox("Choisissez l'onglet", ["Organisations engagées", "Autre Onglet"])
 
-    # Affichage de l'onglet "Organisations engagées" si sélectionné
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
-    # Cette structure peut être étendue pour ajouter d'autres onglets à l'application
+
