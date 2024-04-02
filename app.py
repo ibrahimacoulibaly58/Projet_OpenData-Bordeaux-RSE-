@@ -37,23 +37,19 @@ def display_organisations_engagees():
 def display_map():
     data, _ = get_data()
     if data:
-        m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
+        m = folium.Map(location=[44.84474, -0.60711], zoom_start=12)
         for item in data:
-            # Vérifier si 'point_geo' existe et a les clés 'lat' et 'lon'
-            if 'point_geo' in item and isinstance(item['point_geo'], dict) and 'lat' in item['point_geo'] and 'lon' in item['point_geo']:
-                lat = item['point_geo']['lat']
-                lon = item['point_geo']['lon']
-                folium.Marker(
-                    [lat, lon],
-                    popup=item.get("nom_courant_denomination", "Sans nom")
-                ).add_to(m)
+            if 'point_geo' in item and item['point_geo']:
+                lat = float(item['point_geo']['lat'])
+                lon = float(item['point_geo']['lon'])
+                folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
         folium_static(m)
 
 # Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
 def display_dialogue():
     st.markdown("# Patientez quelques heures encore... :)")
 
-# Main function to orchestrate the app UI
+# Main function orchestrating the app UI
 def main():
     st.sidebar.title("Navigation")
     app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Carte", "Dialoguer avec l'assistant IA RSE bziiit"])
