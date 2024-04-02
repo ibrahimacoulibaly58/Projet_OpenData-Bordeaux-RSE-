@@ -39,10 +39,17 @@ def display_map():
     if data:
         m = folium.Map(location=[44.84474, -0.60711], zoom_start=12)
         for item in data:
-            if 'point_geo' in item and item['point_geo']:
-                lat = float(item['point_geo']['lat'])
-                lon = float(item['point_geo']['lon'])
-                folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
+            try:
+                # On tente d'extraire et de convertir lat et lon en flottants
+                lat = float(item.get('point_geo', {}).get('lat'))
+                lon = float(item.get('point_geo', {}).get('lon'))
+                # On vérifie que lat et lon ont été correctement convertis (ne sont pas NaN)
+                if lat and lon:
+                    folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
+            except (ValueError, TypeError):
+                # Cette exception attrape les cas où la conversion en float échoue
+                # ou les valeurs de lat/lon ne sont pas présentes ou pas valides
+                continue
         folium_static(m)
 
 # Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
