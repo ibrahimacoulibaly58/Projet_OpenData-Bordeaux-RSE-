@@ -33,42 +33,33 @@ def display_organisations_engagees():
         df = df[["Nom", "Commune", "Section NAF", "Effectif", "Action RSE"]]
         st.dataframe(df, width=None, height=None)
 
-# Fonction pour afficher la carte
-def display_map():
+# Nouvelle fonction pour l'onglet "GeoRSE Insights"
+def display_geo_rse_insights():
     data, _ = get_data()
     if data:
         m = folium.Map(location=[44.84474, -0.60711], zoom_start=11)
         for item in data:
-            try:
-                # Supposons que 'point_geo' est une liste [lat, lon]
-                point_geo = item.get('point_geo', [])
-                if point_geo:
-                    # Extraction de lat et lon par indexation de la liste, en supposant l'ordre correct [lat, lon]
-                    lat, lon = point_geo
-                    lat, lon = float(lat), float(lon)
-                    # Vérification que lat et lon sont valides
-                    if lat and lon:
-                        folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
-            except (ValueError, TypeError, IndexError):
-                # Gestion des erreurs pour la conversion en float, format de données inattendu, ou index manquant
-                continue
+            point_geo = item.get('point_geo', [])
+            if point_geo:
+                lat, lon = point_geo
+                lat, lon = float(lat), float(lon)
+                if lat and lon:
+                    folium.Marker(
+                        [lat, lon],
+                        popup=f"<b>{item.get('nom_courant_denomination', 'Sans nom')}</b><br>Action RSE: {item.get('action_rse', 'Non spécifié')}",
+                        icon=folium.Icon(color="green", icon="leaf"),
+                    ).add_to(m)
         folium_static(m)
-
-# Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
-def display_dialogue():
-    st.markdown("# Patientez quelques heures encore... :)")
 
 # Main function orchestrating the app UI
 def main():
     st.sidebar.title("Navigation")
-    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Carte", "Dialoguer avec l'assistant IA RSE bziiit"])
+    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "GeoRSE Insights"])
 
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
-    elif app_mode == "Carte":
-        display_map()
-    elif app_mode == "Dialoguer avec l'assistant IA RSE bziiit":
-        display_dialogue()
+    elif app_mode == "GeoRSE Insights":
+        display_geo_rse_insights()
 
 if __name__ == "__main__":
     main()
