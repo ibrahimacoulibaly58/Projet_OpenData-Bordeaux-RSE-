@@ -4,7 +4,7 @@ import requests
 import folium
 from streamlit_folium import folium_static
 
-# Fonction pour récupérer les données de l'API (ajustez selon vos besoins)
+# Fonction pour récupérer les données de l'API
 def get_data():
     url = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=met_etablissement_rse&q=&rows=100"
     response = requests.get(url)
@@ -23,28 +23,36 @@ def display_organisations_engagees():
     data, _ = get_data()
     if data:
         df = pd.DataFrame(data)
-        # Sélection et réorganisation des colonnes
-        df = df[["nom_courant_denomination", "commune", "libelle_section_naf", "tranche_effectif_entreprise", "action_rse"]]
-        st.dataframe(df, width=None, height=None)  # Ajustez width et height si nécessaire
+        df = df.rename(columns={
+            "nom_courant_denomination": "Nom",
+            "commune": "Commune",
+            "libelle_section_naf": "Section NAF",
+            "tranche_effectif_entreprise": "Effectif",
+            "action_rse": "Action RSE"
+        })
+        df = df[["Nom", "Commune", "Section NAF", "Effectif", "Action RSE"]]
+        st.dataframe(df, width=None, height=None)
 
-# Fonction pour afficher la carte avec Folium (à ajuster selon vos données)
+# Fonction pour afficher la carte
 def display_map():
     data, _ = get_data()
     if data:
-        # Création d'une carte centrée autour de Bordeaux
-        m = folium.Map(location=[44.8378, -0.5792], zoom_start=12)
-        # Ajout des entreprises sur la carte
+        m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
         for item in data:
-            if 'geolocalisation' in item:
-                folium.Marker(location=[item['geolocalisation'][0], item['geolocalisation'][1]],
-                              popup=item["nom_courant_denomination"]).add_to(m)
+            if 'point_geo' in item and item['point_geo'] is not None:
+                lat = item['point_geo']['lat']
+                lon = item['point_geo']['lon']
+                folium.Marker(
+                    [lat, lon],
+                    popup=item.get("Nom", "Sans nom")
+                ).add_to(m)
         folium_static(m)
 
 # Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
 def display_dialogue():
     st.markdown("# Patientez quelques heures encore... :)")
 
-# Création des onglets de l'application
+# Main function to orchestrate the app UI
 def main():
     st.sidebar.title("Navigation")
     app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Carte", "Dialoguer avec l'assistant IA RSE bziiit"])
