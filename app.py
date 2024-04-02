@@ -50,6 +50,7 @@ def main():
     app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Carte", "Dialoguer avec l'assistant IA RSE bziiit"])
 
     if app_mode == "Organisations engagées":
+<<<<<<< HEAD
         display_organisations_engagees()
     elif app_mode == "Carte":
         display_map()
