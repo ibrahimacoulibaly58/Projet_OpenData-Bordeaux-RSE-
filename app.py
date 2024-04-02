@@ -34,32 +34,29 @@ def display_organisations_engagees():
         st.dataframe(df, width=None, height=None)
 
 # Fonction pour afficher la carte
-def display_map():
-    data, _ = get_data()
-    if data:
-        m = folium.Map(location=[44.84474, -0.60711], zoom_start=12)
-        for item in data:
-            if 'point_geo' in item and item['point_geo']:
+def display_map(items):
+    # Fonction pour afficher la carte, avec une gestion robuste des données
+    for item in items:
+        try:
+            if 'point_geo' in item and 'lat' in item['point_geo'] and item['point_geo']['lat']:
                 lat = float(item['point_geo']['lat'])
-                lon = float(item['point_geo']['lon'])
-                folium.Marker([lat, lon], popup=item.get("nom_courant_denomination", "Sans nom")).add_to(m)
-        folium_static(m)
+                # Ici, intégrez votre logique pour utiliser 'lat'
+                st.write(f"Latitude: {lat}")  # Exemple d'utilisation de Streamlit pour afficher la latitude
+            else:
+                st.error(f"Données géographiques incomplètes ou absentes pour l'item: {item}")
+        except ValueError as e:
+            st.error(f"Erreur lors de la conversion de la latitude pour l'item: {item}. Erreur: {e}")
 
-# Fonction pour l'onglet "Dialoguer avec l'assistant IA RSE bziiit"
-def display_dialogue():
-    st.markdown("# Patientez quelques heures encore... :)")
-
-# Main function orchestrating the app UI
 def main():
-    st.sidebar.title("Navigation")
-    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Carte", "Dialoguer avec l'assistant IA RSE bziiit"])
-
-    if app_mode == "Organisations engagées":
-        display_organisations_engagees()
-    elif app_mode == "Carte":
-        display_map()
-    elif app_mode == "Dialoguer avec l'assistant IA RSE bziiit":
-        display_dialogue()
+    # Ici, vous initialiseriez vos données, par exemple :
+    items = [
+        {'name': 'Location A', 'point_geo': {'lat': '48.8566', 'lon': '2.3522'}},
+        {'name': 'Location B', 'point_geo': {'lat': '', 'lon': '2.3522'}},  # Cet élément provoquera une erreur de validation
+        {'name': 'Location C'}  # Cet élément provoquera une erreur de données manquantes
+    ]
+    
+    # Appel de la fonction pour afficher la carte avec les items
+    display_map(items)
 
 if __name__ == "__main__":
     main()
