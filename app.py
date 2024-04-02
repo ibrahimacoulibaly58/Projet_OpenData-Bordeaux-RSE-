@@ -50,8 +50,3 @@ if __name__ == "__main__":
 
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
-<<<<<<< HEAD
-
-=======
-    # Cette structure peut être étendue pour ajouter d'autres onglets à l'application 
->>>>>>> cffc976024926b7fc4a558ce209470d5cbd2fb83
