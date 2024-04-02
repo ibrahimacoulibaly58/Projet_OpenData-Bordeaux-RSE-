@@ -39,12 +39,13 @@ def display_map():
     if data:
         m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
         for item in data:
-            if 'point_geo' in item and item['point_geo'] is not None:
+            # Vérifier si 'point_geo' existe et a les clés 'lat' et 'lon'
+            if 'point_geo' in item and isinstance(item['point_geo'], dict) and 'lat' in item['point_geo'] and 'lon' in item['point_geo']:
                 lat = item['point_geo']['lat']
                 lon = item['point_geo']['lon']
                 folium.Marker(
                     [lat, lon],
-                    popup=item.get("Nom", "Sans nom")
+                    popup=item.get("nom_courant_denomination", "Sans nom")
                 ).add_to(m)
         folium_static(m)
 
