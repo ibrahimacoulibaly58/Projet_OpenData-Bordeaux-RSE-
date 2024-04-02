@@ -37,7 +37,7 @@ def display_organisations_engagees():
 def display_map():
     data, _ = get_data()
     if data:
-        m = folium.Map(location=[44.84474, -0.60711], zoom_start=12)
+        m = folium.Map(location=[44.84474, -0.60711], zoom_start=11)
         for item in data:
             try:
                 # Supposons que 'point_geo' est une liste [lat, lon]
