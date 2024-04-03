@@ -36,9 +36,23 @@ def display_organisations_engagees():
 
 # Fonction pour l'onglet "GeoRSE Insights"
 def display_geo_rse_insights():
-    # La même fonction que celle définie précédemment pour afficher la carte
+    data, _ = get_data()
+    if data:
+        m = folium.Map(location=[44.84474, -0.60711], zoom_start=11)
+        for item in data:
+            point_geo = item.get('point_geo', [])
+            if point_geo:
+                lat, lon = point_geo
+                lat, lon = float(lat), float(lon)
+                if lat and lon:
+                    folium.Marker(
+                        [lat, lon],
+                        popup=f"<b>{item.get('nom_courant_denomination', 'Sans nom')}</b><br>Action RSE: {item.get('action_rse', 'Non spécifié')}",
+                        icon=folium.Icon(color="green", icon="leaf"),
+                    ).add_to(m)
+        folium_static(m)
 
-# Classification des actions RSE basée sur les descriptions
+# Fonction pour la classification des actions RSE
 def classify_rse_actions(descriptions):
     classifier = pipeline("zero-shot-classification", model="typeform/distilbert-base-uncased-mnli")
     categories = [
@@ -62,14 +76,12 @@ def classify_rse_actions(descriptions):
 # Nouvelle fonction pour l'onglet de classification RSE
 def display_rse_categorizer():
     st.header("Classification des Actions RSE")
-    st.write("Classification automatique des actions RSE des entreprises.")
+    st.write("Cet outil classe les actions RSE des entreprises selon les normes ISO 26000.")
     
     data, _ = get_data()
     if data:
         descriptions = [item['action_rse'] for item in data if 'action_rse' in item]
         categories = classify_rse_actions(descriptions)
-        
-        # Affichage des résultats
         for i, category in enumerate(categories):
             st.write(f"Action RSE: {descriptions[i]}")
             st.write(f"Catégorie prédite: {category}")
