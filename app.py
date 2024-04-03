@@ -2,9 +2,12 @@ import streamlit as st
 import pandas as pd
 import requests
 import folium
-import tensorflow as tf
 from streamlit_folium import folium_static
 from transformers import pipeline
+
+import tensorflow as tf
+print("TensorFlow version:", tf.__version__)
+print("Keras version:", tf.keras.__version__)
 
 # Fonction pour récupérer les données de l'API
 def get_data():
