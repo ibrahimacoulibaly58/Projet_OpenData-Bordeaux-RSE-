@@ -6,6 +6,7 @@ from streamlit_folium import folium_static
 from transformers import pipeline
 
 import tensorflow as tf
+assert tf.__version__.startswith('2.')
 print("TensorFlow version:", tf.__version__)
 
 # Fonction pour récupérer les données de l'API
