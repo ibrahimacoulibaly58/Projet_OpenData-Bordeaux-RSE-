@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import folium
+import tensorflow as tf
 from streamlit_folium import folium_static
 from transformers import pipeline
 
