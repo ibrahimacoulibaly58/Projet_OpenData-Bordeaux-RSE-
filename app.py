@@ -7,7 +7,6 @@ from transformers import pipeline
 
 import tensorflow as tf
 print("TensorFlow version:", tf.__version__)
-print("Keras version:", tf.keras.__version__)
 
 # Fonction pour récupérer les données de l'API
 def get_data():
