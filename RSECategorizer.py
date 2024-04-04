@@ -30,3 +30,5 @@ def classify_rse_actions(descriptions):
 # Exemple d'utilisation (à des fins de test, à commenter ou supprimer pour l'intégration finale)
 # descriptions = ["Promotion de l'énergie renouvelable", "Amélioration des conditions de travail"]
 # print(classify_rse_actions(descriptions))
+
+
