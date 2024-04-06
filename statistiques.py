@@ -9,25 +9,23 @@ import matplotlib.pyplot as plt
 def display_companies_by_sector(df):
     sector_counts = df['libelle_section_naf'].value_counts().reset_index()
     sector_counts.columns = ['Secteur', 'Nombre']
-    fig = px.bar(sector_counts, x='Secteur', y='Nombre', title="",
+    fig = px.bar(sector_counts, x='Secteur', y='Nombre',
                  color='Nombre', labels={'Nombre':'Nombre d\'entreprises'}, template='plotly_white')
-    fig.update_layout(xaxis_tickangle=-45, title_text="Répartition des entreprises par secteur d'activité", title_x=0.5)
+    fig.update_layout(xaxis_tickangle=-45)
     st.plotly_chart(fig)
 
 def display_company_sizes(df):
-    fig = px.histogram(df, x='tranche_effectif_entreprise', title="",
+    fig = px.histogram(df, x='tranche_effectif_entreprise',
                        labels={'tranche_effectif_entreprise':'Taille de l\'entreprise'}, template='plotly_white')
     fig.update_traces(marker_color='green')
-    fig.update_layout(title_text="Distribution des tailles d'entreprises", title_x=0.5)
     st.plotly_chart(fig)
 
 def display_companies_by_commune(df):
     commune_counts = df['commune'].value_counts(normalize=True).reset_index()
     commune_counts.columns = ['Commune', 'Pourcentage']
-    fig = px.pie(commune_counts, values='Pourcentage', names='Commune', title='',
+    fig = px.pie(commune_counts, values='Pourcentage', names='Commune',
                  template='plotly_white', hole=.3)
     fig.update_traces(textinfo='percent+label')
-    fig.update_layout(title_text="Pourcentage d'entreprises par Commune", title_x=0.5)
     st.plotly_chart(fig)
 
 def display_rse_actions_wordcloud(df):
