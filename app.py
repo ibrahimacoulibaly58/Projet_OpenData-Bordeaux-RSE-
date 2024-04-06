@@ -10,21 +10,8 @@ def get_data():
     if response.status_code == 200:
         data = response.json()
         records = data.get("records", [])
-        if not records:
-            st.error("Aucun enregistrement trouvé dans les données de l'API.")
-            return []
-        cleaned_data = []
-        for record in records:
-            fields = record.get("fields", {})
-            point_geo = fields.get("geolocalisation")
-            if point_geo and isinstance(point_geo, list) and len(point_geo) == 2:
-                lat, lon = point_geo
-                fields["latitude"] = lat
-                fields["longitude"] = lon
-                cleaned_data.append(fields)
-        return cleaned_data
+        return [record.get("fields") for record in records]
     else:
-        st.error(f"Échec de la récupération des données de l'API. Statut: {response.status_code}")
         return []
 
 def display_organisations_engagees(data):
@@ -45,13 +32,16 @@ def display_organisations_engagees(data):
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        # Utilise les coordonnées extraites
-        if "latitude" in item and "longitude" in item:
-            folium.Marker(
-                [item["latitude"], item["longitude"]],
-                icon=folium.Icon(color="green", icon="leaf"),
-                popup=item.get('nom_courant_denomination', 'Information non disponible'),
-            ).add_to(m)
+        point_geo = item.get('point_geo')
+        if isinstance(point_geo, dict):
+            lon = point_geo.get('lon')
+            lat = point_geo.get('lat')
+            if lon and lat:
+                folium.Marker(
+                    [lat, lon],
+                    icon=folium.Icon(color="green", icon="leaf"),
+                    popup=item.get('nom_courant_denomination', 'Information non disponible'),
+                ).add_to(m)
     folium_static(m)
 
 def main():
