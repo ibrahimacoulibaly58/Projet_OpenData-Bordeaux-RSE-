@@ -10,19 +10,21 @@ def get_data():
     if response.status_code == 200:
         data = response.json()
         records = data.get("records", [])
+        if not records:
+            st.error("Aucun enregistrement trouvé dans les données de l'API.")
+            return []
         cleaned_data = []
         for record in records:
             fields = record.get("fields", {})
-            point_geo = fields.get("point_geo")
-            if isinstance(point_geo, dict):  # S'assure que point_geo est un dictionnaire
-                lat = point_geo.get("lat")
-                lon = point_geo.get("lon")
-                if lat and lon:
-                    fields["latitude"] = lat
-                    fields["longitude"] = lon
-                    cleaned_data.append(fields)
+            point_geo = fields.get("geolocalisation")
+            if point_geo and isinstance(point_geo, list) and len(point_geo) == 2:
+                lat, lon = point_geo
+                fields["latitude"] = lat
+                fields["longitude"] = lon
+                cleaned_data.append(fields)
         return cleaned_data
     else:
+        st.error(f"Échec de la récupération des données de l'API. Statut: {response.status_code}")
         return []
 
 def display_organisations_engagees(data):
