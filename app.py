@@ -13,9 +13,9 @@ def get_data():
             cleaned_data = [{'nom': record['fields'].get('nom'),
                              'adresse': record['fields'].get('adresse'),
                              'engagement_rse': record['fields'].get('rse', 'Non'),
-                             'lat': record['fields'].get('geo_point_2d', [None])[0],
-                             'lon': record['fields'].get('geo_point_2d', [None])[1]}
-                            for record in data]
+                             'lat': record['fields'].get('geo_point_2d', [None, None])[0],
+                             'lon': record['fields'].get('geo_point_2d', [None, None])[1]}
+                            for record in data if 'geo_point_2d' in record['fields']]
             return cleaned_data
     except requests.RequestException as e:
         print(f"Erreur lors de la récupération des données : {e}")
