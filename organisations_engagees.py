@@ -18,7 +18,7 @@ def get_data():
         st.error(f"Erreur lors de la récupération des données de l'API: {e}")
         return []
 
-def display_organisations_engagees():
+def display_organisations_engagees(data):
     st.markdown("## OPEN DATA RSE")
     st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
     
