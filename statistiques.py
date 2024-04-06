@@ -2,7 +2,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import matplotlib.pyplot as plt
 from data_manager import get_data
+from wordcloud import WordCloud
 
 def display_companies_by_sector(df):
     # Assurez-vous d'utiliser le nom correct de la colonne ici
@@ -23,7 +25,18 @@ def display_company_sizes(df):
 
 def display_rse_actions_wordcloud(df):
     st.title("Cartographie des Actions RSE")
-    st.markdown("Cette section affichera un nuage de mots des actions RSE.")
+    
+    # Préparation des données : concaténation des entrées de la colonne 'action_rse' en une seule chaîne de texte
+    text = " ".join(action for action in df['action_rse'].dropna())
+    
+    # Génération du nuage de mots
+    wordcloud = WordCloud(width = 800, height = 400, background_color ='white').generate(text)
+    
+    # Affichage du nuage de mots
+    fig, ax = plt.subplots()
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.axis('off')  # Enlève les axes pour un affichage plus propre
+    st.pyplot(fig)
 
 def main():
     st.title("Statistiques sur les entreprises engagées RSE")
