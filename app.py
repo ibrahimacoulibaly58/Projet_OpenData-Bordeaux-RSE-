@@ -1,36 +1,31 @@
-
-import requests
 import streamlit as st
+import pandas as pd
+import requests
+import folium
+from streamlit_folium import folium_static
 from organisations_engagees import display_organisations_engagees
 from localisation import display_map
 
+# Fonction pour récupérer les données de l'API
 def get_data():
     url = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=met_etablissement_rse&q=&rows=100"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json().get('records', [])
-            cleaned_data = [{'nom': record['fields'].get('nom'),
-                             'adresse': record['fields'].get('adresse'),
-                             'engagement_rse': record['fields'].get('rse', 'Non'),
-                             'lat': record['fields'].get('geo_point_2d', [None, None])[0],
-                             'lon': record['fields'].get('geo_point_2d', [None, None])[1]}
-                            for record in data if 'geo_point_2d' in record['fields']]
-            return cleaned_data
-    except requests.RequestException as e:
-        print(f"Erreur lors de la récupération des données : {e}")
-        return []
-
-def main():
-    st.title("Application RSE Bordeaux Métropole")
-    
-    data = get_data()
-    
-    if data:
-        display_organisations_engagees(data)
-        display_map(data)
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        records = data.get("records", [])
+        return [record["fields"] for record in records], data.get("nhits", 0)
     else:
-        st.write("Aucune donnée disponible pour le moment.")
-        
+        return [], 0
+
+# Main function orchestrating the app UI
+def main():
+    st.sidebar.title("Navigation")
+    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisations"])
+
+    if app_mode == "Organisations engagées":
+        display_organisations_engagees()
+    elif app_mode == "Localisations":
+        display_map()
+    
 if __name__ == "__main__":
     main()
