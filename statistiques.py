@@ -10,7 +10,8 @@ def display_companies_by_sector(df):
     sector_counts.columns = ['Secteur', 'Nombre']
     fig = px.bar(sector_counts, x='Secteur', y='Nombre', title="Répartition des entreprises par secteur d'activité",
                  color='Nombre', labels={'Nombre':'Nombre d\'entreprises'}, template='plotly_white')
-    fig.update_layout(transition_duration=500)
+    # Rotation des étiquettes de l'axe des x pour une meilleure lisibilité
+    fig.update_layout(xaxis_tickangle=-45)
     st.plotly_chart(fig)
 
 def display_company_sizes(df):
