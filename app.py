@@ -35,11 +35,12 @@ def display_organisations_engagees():
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        if 'latitude' in item and 'longitude' in item:
+        lat_lon = item.get('point_geo', None)
+        if lat_lon:
             folium.Marker(
-                location=[item['latitude'], item['longitude']],
+                [lat_lon['lat'], lat_lon['lon']],
+                icon=folium.Icon(color="green", icon="leaf"),
                 popup=item.get('Nom', 'Sans nom'),
-                icon=folium.Icon(color="green", icon="leaf")
             ).add_to(m)
     folium_static(m)
 
