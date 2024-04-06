@@ -1,4 +1,4 @@
-import requests  # Ajoutez cette ligne au début de votre fichier
+import requests
 import streamlit as st
 from organisations_engagees import display_organisations_engagees
 from localisation import display_map
