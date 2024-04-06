@@ -1,3 +1,4 @@
+
 import requests
 import streamlit as st
 from organisations_engagees import display_organisations_engagees
@@ -8,32 +9,28 @@ def get_data():
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            data = response.json()
-            records = data.get("records", [])
-            cleaned_data = []
-            for record in records:
-                fields = record.get("fields", {})
-                geoloc = fields.get("geolocalisation")
-                if geoloc and isinstance(geoloc, list) and len(geoloc) == 2:
-                    lat, lon = geoloc
-                    cleaned_data.append({"lat": lat, "lon": lon, "name": fields.get("nom_courant_denomination", "Inconnu")})
+            data = response.json().get('records', [])
+            cleaned_data = [{'nom': record['fields'].get('nom'),
+                             'adresse': record['fields'].get('adresse'),
+                             'engagement_rse': record['fields'].get('rse', 'Non'),
+                             'lat': record['fields'].get('geo_point_2d', [None])[0],
+                             'lon': record['fields'].get('geo_point_2d', [None])[1]}
+                            for record in data]
             return cleaned_data
-        else:
-            st.error(f"Failed to fetch data. Status code: {response.status_code}")
-            return []
     except requests.RequestException as e:
-        st.error(f"Error occurred: {e}")
+        print(f"Erreur lors de la récupération des données : {e}")
         return []
 
 def main():
-    st.sidebar.title("Navigation")
-    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisation des Entreprises"])
-
+    st.title("Application RSE Bordeaux Métropole")
+    
     data = get_data()
-    if app_mode == "Organisations engagées":
+    
+    if data:
         display_organisations_engagees(data)
-    elif app_mode == "Localisation des Entreprises":
         display_map(data)
-
+    else:
+        st.write("Aucune donnée disponible pour le moment.")
+        
 if __name__ == "__main__":
     main()
