@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 from data_manager import get_data
-from wordcloud import WordCloud
+from wordcloud import WordCloud,STOPWORDS
 
 def display_companies_by_sector(df):
     # Assurez-vous d'utiliser le nom correct de la colonne ici
@@ -26,17 +26,24 @@ def display_company_sizes(df):
 def display_rse_actions_wordcloud(df):
     st.title("Cartographie des Actions RSE")
     
-    # Préparation des données : concaténation des entrées de la colonne 'action_rse' en une seule chaîne de texte
+    # Définir les mots à exclure
+    custom_stopwords = set(["nous", "du", "notre", "de", "et", "est", "pour", "le", "une", "se", "en", "au", "à", "que", "sont", "leur", "son"])
+    
+    # Ajouter vos mots à exclure aux stop words par défaut de wordcloud
+    stopwords = STOPWORDS.union(custom_stopwords)
+    
+    # Préparation des données
     text = " ".join(action for action in df['action_rse'].dropna())
     
-    # Génération du nuage de mots
-    wordcloud = WordCloud(width = 800, height = 400, background_color ='white').generate(text)
+    # Génération du nuage de mots avec les stop words personnalisés
+    wordcloud = WordCloud(stopwords=stopwords, background_color="white", width=800, height=400).generate(text)
     
     # Affichage du nuage de mots
     fig, ax = plt.subplots()
     ax.imshow(wordcloud, interpolation='bilinear')
-    ax.axis('off')  # Enlève les axes pour un affichage plus propre
+    ax.axis('off')
     st.pyplot(fig)
+    
 
 def main():
     st.title("Statistiques sur les entreprises engagées RSE")
