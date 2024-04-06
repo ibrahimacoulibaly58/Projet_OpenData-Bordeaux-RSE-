@@ -22,7 +22,7 @@ def main():
     st.sidebar.markdown("Powered by **bziiit IA RSE**")
     st.sidebar.markdown("---")  # Ajoute une ligne de séparation visuelle
     st.sidebar.markdown("2024 : Open source en Licence MIT")
-
+    st.sidebar.markdown("---")  # Ajoute une ligne de séparation visuelle
 
 if __name__ == "__main__":
     main()
