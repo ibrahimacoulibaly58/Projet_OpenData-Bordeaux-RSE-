@@ -12,13 +12,14 @@ def get_data():
         records = data.get("records", [])
         cleaned_data = []
         for record in records:
-            if record.get("fields"):  # Filtre les éventuelles lignes vides
-                fields = record["fields"]
-                point_geo = fields.get("point_geo")
-                if point_geo:  # Assure l'existence du champ point_geo
-                    # Assigne les coordonnées directement aux champs pour faciliter l'accès
-                    fields["latitude"] = point_geo["lat"]
-                    fields["longitude"] = point_geo["lon"]
+            fields = record.get("fields", {})
+            point_geo = fields.get("point_geo")
+            if isinstance(point_geo, dict):  # S'assure que point_geo est un dictionnaire
+                lat = point_geo.get("lat")
+                lon = point_geo.get("lon")
+                if lat and lon:
+                    fields["latitude"] = lat
+                    fields["longitude"] = lon
                     cleaned_data.append(fields)
         return cleaned_data
     else:
@@ -42,7 +43,7 @@ def display_organisations_engagees(data):
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        # Utilise les coordonnées directement extraites et stockées
+        # Utilise les coordonnées extraites
         if "latitude" in item and "longitude" in item:
             folium.Marker(
                 [item["latitude"], item["longitude"]],
