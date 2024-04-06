@@ -10,11 +10,8 @@ def get_data():
     if response.status_code == 200:
         data = response.json()
         records = data.get("records", [])
-        cleaned_data = []
-        for record in records:
-            fields = record.get("fields", {})
-            if fields:  # Assurer que le champ n'est pas vide
-                cleaned_data.append(fields)
+        # S'assurer que tous les enregistrements sont pris en compte
+        cleaned_data = [record.get("fields", {}) for record in records if record.get("fields", {})]
         return cleaned_data
     else:
         return []
@@ -23,13 +20,17 @@ def display_organisations_engagees(data):
     st.markdown("## OPEN DATA RSE")
     st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
     
-    # Compter le nombre d'établissements et afficher le nombre
     num_etablissements = len(data)
     st.markdown(f"Nombre d'établissements : {num_etablissements}")
     
     if data:
         df = pd.DataFrame(data)
-        df = df[['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']]
+        # Vérification ajoutée pour la cohérence des données
+        expected_columns = ['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']
+        for column in expected_columns:
+            if column not in df.columns:
+                df[column] = None  # Ajouter la colonne manquante avec des valeurs None
+        df = df[expected_columns]
         df.rename(columns={
             'nom_courant_denomination': 'Nom',
             'commune': 'Commune',
@@ -37,7 +38,7 @@ def display_organisations_engagees(data):
             'tranche_effectif_entreprise': 'Effectif',
             'action_rse': 'Action RSE'
         }, inplace=True)
-        st.dataframe(df)
+        st.dataframe(df, height=800)  # Réglage de la hauteur pour s'assurer de l'affichage de toutes les lignes
     else:
         st.write("Aucune donnée disponible.")
 
