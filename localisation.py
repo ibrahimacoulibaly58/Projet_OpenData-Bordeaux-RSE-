@@ -15,7 +15,6 @@ def get_data():
                 fields = record.get("fields", {})
                 geoloc = fields.get("geolocalisation")
                 if geoloc:
-                    # S'assurer que geoloc est une liste avec au moins deux éléments
                     lat, lon = geoloc[0], geoloc[1]
                     cleaned_data.append({"lat": lat, "lon": lon, "name": fields.get("nom_courant_denomination", "Inconnu")})
             return cleaned_data
@@ -26,12 +25,7 @@ def get_data():
         st.error(f"Error occurred: {e}")
         return []
 
-def display_map():
-    data = get_data()
-    if not data:
-        st.write("No data available to display on the map.")
-        return
-    
+def display_map(data):
     # Initialiser la carte au centre de Bordeaux
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     
@@ -46,4 +40,5 @@ def display_map():
     folium_static(m)
 
 if __name__ == "__main__":
-    display_map()
+    data = get_data()
+    display_map(data)
