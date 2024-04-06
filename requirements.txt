@@ -3,5 +3,7 @@ pandas
 requests
 folium
 streamlit-folium
-transformers==4.20.1
-tensorflow==2.16.1
+transformers
+torch
+torchvision
+torchaudio
