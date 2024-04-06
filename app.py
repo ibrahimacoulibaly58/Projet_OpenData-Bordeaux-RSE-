@@ -9,17 +9,14 @@ def get_data():
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        records = data["records"]
-        data_for_display = []
+        records = data.get("records", [])
+        cleaned_data = []
         for record in records:
-            field = record["fields"]
-            # Assume that 'geolocalisation' field is present and correctly formatted
-            if "geolocalisation" in field:
-                lat, lon = field["geolocalisation"]
-                field["latitude"] = lat
-                field["longitude"] = lon
-                data_for_display.append(field)
-        return data_for_display
+            fields = record.get("fields", {})
+            # Assurez-vous que les champs nécessaires existent
+            if all(key in fields for key in ['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']):
+                cleaned_data.append(fields)
+        return cleaned_data
     else:
         return []
 
@@ -27,24 +24,29 @@ def display_organisations_engagees(data):
     st.markdown("## OPEN DATA RSE")
     st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
     
-    df = pd.DataFrame(data)
-    df = df[['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']]
-    st.dataframe(df.rename(columns={
-        'nom_courant_denomination': 'Nom',
-        'commune': 'Commune',
-        'libelle_section_naf': 'Section NAF',
-        'tranche_effectif_entreprise': 'Effectif',
-        'action_rse': 'Action RSE'
-    }))
+    if data:
+        df = pd.DataFrame(data)
+        df = df[['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']]
+        df.rename(columns={
+            'nom_courant_denomination': 'Nom',
+            'commune': 'Commune',
+            'libelle_section_naf': 'Section NAF',
+            'tranche_effectif_entreprise': 'Effectif',
+            'action_rse': 'Action RSE'
+        }, inplace=True)
+        st.dataframe(df)
+    else:
+        st.write("Aucune donnée disponible.")
 
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        if 'latitude' in item and 'longitude' in item:
+        geoloc = item.get('geolocalisation')
+        if geoloc:
             folium.Marker(
-                [item['latitude'], item['longitude']],
+                location=[geoloc[0], geoloc[1]],
                 icon=folium.Icon(color="green", icon="leaf"),
-                popup=item['nom_courant_denomination'],
+                popup=item.get('nom_courant_denomination', 'Information non disponible'),
             ).add_to(m)
     folium_static(m)
 
