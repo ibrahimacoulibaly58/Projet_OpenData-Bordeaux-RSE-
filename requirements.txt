@@ -8,3 +8,5 @@ torch
 torchvision
 torchaudio
 wordcloud
+plotly
+matplotlib
