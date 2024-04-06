@@ -2,13 +2,19 @@ import folium
 from streamlit_folium import folium_static
 import streamlit as st
 
-# Assurez-vous que cette fonction est bien présente
-def display_map(data):
-    m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
-    # Logique pour ajouter des marqueurs basée sur 'data'
-    folium_static(m)
+def display_map():
+    # Coordonnées de l'exemple "ARIANE GROUP OMNISPORTS RASSEMBLEMENT ASSOCIATIF"
+    lat, lon = 44.86091098994118, -0.6997150007542606
 
-# La fonction get_data doit également être présente
-def get_data():
-    # Logique pour récupérer les données
-    return []
+    # Création de la carte centrée sur les coordonnées avec un niveau de zoom approprié
+    m = folium.Map(location=[lat, lon], zoom_start=15)
+
+    # Ajout d'un marqueur pour l'entreprise "ARIANE GROUP OMNISPORTS RASSEMBLEMENT ASSOCIATIF" avec ces coordonnées
+    folium.Marker(
+        [lat, lon],
+        icon=folium.Icon(color="green", icon="leaf"),
+        popup="ARIANE GROUP OMNISPORTS RASSEMBLEMENT ASSOCIATIF",
+    ).add_to(m)
+
+    # Affichage de la carte dans l'application Streamlit
+    folium_static(m)
