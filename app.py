@@ -33,7 +33,7 @@ def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
         point_geo = item.get('point_geo')
-        if point_geo:
+        if isinstance(point_geo, dict):
             lon = point_geo.get('lon')
             lat = point_geo.get('lat')
             if lon and lat:
