@@ -50,14 +50,6 @@ def main():
     data, _ = get_data()
     df = pd.DataFrame(data)
     
-    # Affiche les noms des colonnes du DataFrame
-    if not df.empty:
-        st.write("Colonnes du DataFrame:", df.columns.tolist())
-        display_companies_by_sector(df)
-        display_company_sizes(df)
-        display_rse_actions_wordcloud(df)
-    else:
-        st.write("Aucune donnée à afficher pour le moment.")
 
 if __name__ == "__main__":
     main()
