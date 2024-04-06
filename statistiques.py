@@ -27,7 +27,7 @@ def display_rse_actions_wordcloud(df):
     st.title("Cartographie des Actions RSE")
     
     # Définir les mots à exclure
-    custom_stopwords = set(["cette", "afin", "via", "d'", "sa", "dans", "ont", "avec", "aux", "ce", "chez", "ont", "cela", "la", "un", "avons", "par", "c'est", "s'est", "aussi", "leurs", "d'un", "nos", "les", "sur", "ses", "tous", "nous", "du", "notre", "de", "et", "est", "pour", "le", "une", "se", "en", "au", "à", "que", "sont", "leur", "son"])
+    custom_stopwords = set(["d ", "des", "qui", "ainsi", "toute", "hors", "plus", "cette", "afin", "via", "d'", "sa", "dans", "ont", "avec", "aux", "ce", "chez", "ont", "cela", "la", "un", "avons", "par", "c'est", "s'est", "aussi", "leurs", "d'un", "nos", "les", "sur", "ses", "tous", "nous", "du", "notre", "de", "et", "est", "pour", "le", "une", "se", "en", "au", "à", "que", "sont", "leur", "son"])
     
     # Ajouter vos mots à exclure aux stop words par défaut de wordcloud
     stopwords = STOPWORDS.union(custom_stopwords)
