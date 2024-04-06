@@ -13,8 +13,7 @@ def get_data():
         cleaned_data = []
         for record in records:
             fields = record.get("fields", {})
-            # Assurez-vous que les champs nécessaires existent
-            if all(key in fields for key in ['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']):
+            if fields:  # Assurer que le champ n'est pas vide
                 cleaned_data.append(fields)
         return cleaned_data
     else:
@@ -23,6 +22,10 @@ def get_data():
 def display_organisations_engagees(data):
     st.markdown("## OPEN DATA RSE")
     st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
+    
+    # Compter le nombre d'établissements et afficher le nombre
+    num_etablissements = len(data)
+    st.markdown(f"Nombre d'établissements : {num_etablissements}")
     
     if data:
         df = pd.DataFrame(data)
