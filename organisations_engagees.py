@@ -1,6 +1,7 @@
 
 import streamlit as st
 import pandas as pd
+from data_manager import get_data
 
 # Fonction pour l'onglet "Organisations engagées"
 def display_organisations_engagees():

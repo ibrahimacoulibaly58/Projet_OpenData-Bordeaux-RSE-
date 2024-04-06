@@ -2,6 +2,7 @@ import requests
 import folium
 from streamlit_folium import folium_static
 import streamlit as st
+from data_manager import get_data
 
 def display_map():
     data, _ = get_data()
