@@ -10,7 +10,17 @@ def get_data():
     if response.status_code == 200:
         data = response.json()
         records = data.get("records", [])
-        return [record.get("fields") for record in records]
+        cleaned_data = []
+        for record in records:
+            if record.get("fields"):  # Filtre les éventuelles lignes vides
+                fields = record["fields"]
+                point_geo = fields.get("point_geo")
+                if point_geo:  # Assure l'existence du champ point_geo
+                    # Assigne les coordonnées directement aux champs pour faciliter l'accès
+                    fields["latitude"] = point_geo["lat"]
+                    fields["longitude"] = point_geo["lon"]
+                    cleaned_data.append(fields)
+        return cleaned_data
     else:
         return []
 
@@ -32,16 +42,13 @@ def display_organisations_engagees(data):
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        point_geo = item.get('point_geo')
-        if isinstance(point_geo, dict):
-            lon = point_geo.get('lon')
-            lat = point_geo.get('lat')
-            if lon and lat:
-                folium.Marker(
-                    [lat, lon],
-                    icon=folium.Icon(color="green", icon="leaf"),
-                    popup=item.get('nom_courant_denomination', 'Information non disponible'),
-                ).add_to(m)
+        # Utilise les coordonnées directement extraites et stockées
+        if "latitude" in item and "longitude" in item:
+            folium.Marker(
+                [item["latitude"], item["longitude"]],
+                icon=folium.Icon(color="green", icon="leaf"),
+                popup=item.get('nom_courant_denomination', 'Information non disponible'),
+            ).add_to(m)
     folium_static(m)
 
 def main():
