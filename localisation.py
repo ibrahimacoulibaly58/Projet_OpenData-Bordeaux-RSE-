@@ -3,26 +3,6 @@ import folium
 from streamlit_folium import folium_static
 import streamlit as st
 
-# Supposons que cette fonction fonctionne correctement et n'a pas besoin d'être modifiée.
-def get_data():
-    url = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=met_etablissement_rse&q=&rows=100"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        records = data.get("records", [])
-        cleaned_data = []
-        for record in records:
-            fields = record.get("fields", {})
-            # Vérifiez que 'geolocalisation' ou un autre champ contient les coordonnées
-            geoloc = fields.get("geolocalisation")
-            if geoloc and isinstance(geoloc, list) and len(geoloc) == 2:
-                lat, lon = geoloc
-                cleaned_data.append({"lat": lat, "lon": lon, "name": fields.get("nom_courant_denomination", "Inconnu")})
-        return cleaned_data
-    else:
-        st.error(f"Failed to fetch data. Status code: {response.status_code}")
-        return []
-
 def display_map(data):
     if not data:
         st.write("No data available to display on the map.")
