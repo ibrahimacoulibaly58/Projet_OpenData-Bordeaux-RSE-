@@ -11,11 +11,10 @@ def get_data():
         cleaned_data = []
         for record in records:
             fields = record.get("fields", {})
-            # Assurez-vous que point_geo est un dictionnaire avec lat et lon.
             point_geo = fields.get("geolocalisation")
             if point_geo and isinstance(point_geo, list) and len(point_geo) == 2:
-                # Stockez directement lat et lon dans fields pour un accès facile.
-                fields["latitude"], fields["longitude"] = point_geo[0], point_geo[1]
+                lat, lon = point_geo  # Directement extraire la latitude et la longitude
+                fields["latitude"], fields["longitude"] = lat, lon
                 cleaned_data.append(fields)
         return cleaned_data
     else:
@@ -26,12 +25,15 @@ def display_map(data):
     for item in data:
         lat = item.get('latitude')
         lon = item.get('longitude')
-        if lat is not None and lon is not None:
-            # Convertir en float au cas où les données sont des strings
-            lat, lon = float(lat), float(lon)
+        if lat and lon:
+            lat, lon = float(lat), float(lon)  # S'assurer que les coordonnées sont des flottants
             folium.Marker(
                 [lat, lon],
                 icon=folium.Icon(color="green", icon="leaf"),
                 popup=item.get('nom_courant_denomination', 'Information non disponible'),
             ).add_to(m)
     folium_static(m)
+
+if __name__ == "__main__":
+    data = get_data()
+    display_map(data)
