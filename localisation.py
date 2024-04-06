@@ -24,9 +24,11 @@ def get_data():
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        # Utilisez directement latitude et longitude.
-        lat, lon = item.get("latitude"), item.get("longitude")
-        if lat and lon:
+        lat = item.get('latitude')
+        lon = item.get('longitude')
+        if lat is not None and lon is not None:
+            # Convertir en float au cas où les données sont des strings
+            lat, lon = float(lat), float(lon)
             folium.Marker(
                 [lat, lon],
                 icon=folium.Icon(color="green", icon="leaf"),
