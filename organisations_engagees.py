@@ -5,7 +5,7 @@ import pandas as pd
 # Fonction pour l'onglet "Organisations engagées"
 def display_organisations_engagees():
     st.markdown("## OPEN DATA RSE")
-    st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
+    st.markdown("### Découvrez les organisations engagées RSE de Bordeaux Métropole")
     
     data, _ = get_data()
     if data:
