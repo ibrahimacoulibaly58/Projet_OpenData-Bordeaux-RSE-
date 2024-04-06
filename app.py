@@ -9,17 +9,8 @@ def get_data():
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        records = data["records"]
-        cleaned_data = []
-        for record in records:
-            fields = record["fields"]
-            geoloc = fields.get('geolocalisation')
-            if geoloc and len(geoloc) == 2:
-                # Ajoutez latitude et longitude directement aux champs pour faciliter l'accès
-                fields['latitude'] = geoloc[0]
-                fields['longitude'] = geoloc[1]
-                cleaned_data.append(fields)
-        return cleaned_data
+        records = data.get("records", [])
+        return [record.get("fields") for record in records]
     else:
         return []
 
@@ -29,24 +20,24 @@ def display_organisations_engagees(data):
     
     df = pd.DataFrame(data)
     if not df.empty:
-        df = df.rename(columns={
+        df = df[["nom_courant_denomination", "commune", "libelle_section_naf", "tranche_effectif_entreprise", "action_rse"]]
+        st.dataframe(df.rename(columns={
             "nom_courant_denomination": "Nom",
             "commune": "Commune",
             "libelle_section_naf": "Section NAF",
             "tranche_effectif_entreprise": "Effectif",
             "action_rse": "Action RSE"
-        })
-        df = df[["Nom", "Commune", "Section NAF", "Effectif", "Action RSE"]]
-        st.dataframe(df)
+        }))
 
 def display_map(data):
-    m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
+    bordeaux_loc = [44.837789, -0.57918]
+    m = folium.Map(location=bordeaux_loc, zoom_start=12)
     for item in data:
-        if 'latitude' in item and 'longitude' in item:
+        if item.get("geolocalisation"):
             folium.Marker(
-                [item['latitude'], item['longitude']],
+                location=[item["geolocalisation"][0], item["geolocalisation"][1]],
+                popup=item.get("nom_courant_denomination", "Information non disponible"),
                 icon=folium.Icon(color="green", icon="leaf"),
-                popup=item.get('nom_courant_denomination', 'Sans nom'),
             ).add_to(m)
     folium_static(m)
 
