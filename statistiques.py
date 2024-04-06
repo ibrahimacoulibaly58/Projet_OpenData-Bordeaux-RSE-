@@ -11,13 +11,14 @@ def display_companies_by_sector(df):
     sector_counts.columns = ['Secteur', 'Nombre']
     fig = px.bar(sector_counts, x='Secteur', y='Nombre',
                  color='Nombre', labels={'Nombre':'Nombre d\'entreprises'}, template='plotly_white')
-    fig.update_layout(xaxis_tickangle=-45)
+    fig.update_layout(xaxis_tickangle=-45, showlegend=False)
     st.plotly_chart(fig)
 
 def display_company_sizes(df):
     fig = px.histogram(df, x='tranche_effectif_entreprise',
-                       labels={'tranche_effectif_entreprise':'Taille de l\'entreprise'}, template='plotly_white')
+                       labels={'tranche_effectif_entreprise':'Taille de l\'entreprise', 'count':'Nombre'}, template='plotly_white')
     fig.update_traces(marker_color='green')
+    fig.update_layout(yaxis_title="Nombre")
     st.plotly_chart(fig)
 
 def display_companies_by_commune(df):
@@ -31,7 +32,7 @@ def display_companies_by_commune(df):
 def display_rse_actions_wordcloud(df):
     st.header("Nuage de mots Actions RSE")
     
-    custom_stopwords = set(["d ", "des", "qui", "ainsi", "toute", "hors", "plus", "cette", "afin", "via", "d'", "sa", "dans", "ont", "avec", "aux", "ce", "chez", "ont", "cela", "la", "un", "avons", "par", "c'est", "s'est", "aussi", "leurs", "d'un", "nos", "les", "sur", "ses", "tous", "nous", "du", "notre", "de", "et", "est", "pour", "le", "une", "se", "en", "au", "à", "que", "sont", "leur", "son"])
+    custom_stopwords = set(["l", "d", "d ", "des", "qui", "ainsi", "toute", "hors", "plus", "cette", "afin", "via", "d'", "sa", "dans", "ont", "avec", "aux", "ce", "chez", "ont", "cela", "la", "un", "avons", "par", "c'est", "s'est", "aussi", "leurs", "d'un", "nos", "les", "sur", "ses", "tous", "nous", "du", "notre", "de", "et", "est", "pour", "le", "une", "se", "en", "au", "à", "que", "sont", "leur", "son"])
     stopwords = STOPWORDS.union(custom_stopwords)
     
     text = " ".join(action for action in df['action_rse'].dropna())
