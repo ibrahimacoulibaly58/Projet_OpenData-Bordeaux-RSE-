@@ -3,5 +3,5 @@ pandas
 requests
 folium
 streamlit-folium
-transformers
-tensorflow
+transformers==4.20.1
+tensorflow==2.16.1
