@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import requests
@@ -11,35 +10,44 @@ def get_data():
     if response.status_code == 200:
         data = response.json()
         records = data["records"]
-        data_for_map = []
+        cleaned_data = []
         for record in records:
-            fields = record.get("fields", {})
-            geo = fields.get("geolocalisation")
-            if geo and len(geo) == 2:
-                lat, lon = geo
-                fields["latitude"] = lat
-                fields["longitude"] = lon
-                data_for_map.append(fields)
-        return data_for_map
-    return []
+            fields = record["fields"]
+            geoloc = fields.get('geolocalisation')
+            if geoloc and len(geoloc) == 2:
+                # Ajoutez latitude et longitude directement aux champs pour faciliter l'accès
+                fields['latitude'] = geoloc[0]
+                fields['longitude'] = geoloc[1]
+                cleaned_data.append(fields)
+        return cleaned_data
+    else:
+        return []
 
 def display_organisations_engagees(data):
     st.markdown("## OPEN DATA RSE")
     st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
+    
     df = pd.DataFrame(data)
     if not df.empty:
+        df = df.rename(columns={
+            "nom_courant_denomination": "Nom",
+            "commune": "Commune",
+            "libelle_section_naf": "Section NAF",
+            "tranche_effectif_entreprise": "Effectif",
+            "action_rse": "Action RSE"
+        })
+        df = df[["Nom", "Commune", "Section NAF", "Effectif", "Action RSE"]]
         st.dataframe(df)
-    else:
-        st.write("Aucune donnée disponible.")
 
 def display_map(data):
     m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
     for item in data:
-        folium.Marker(
-            [item['latitude'], item['longitude']],
-            icon=folium.Icon(color="green", icon="leaf"),
-            popup=item.get('nom_courant_denomination', 'Sans nom'),
-        ).add_to(m)
+        if 'latitude' in item and 'longitude' in item:
+            folium.Marker(
+                [item['latitude'], item['longitude']],
+                icon=folium.Icon(color="green", icon="leaf"),
+                popup=item.get('nom_courant_denomination', 'Sans nom'),
+            ).add_to(m)
     folium_static(m)
 
 def main():
