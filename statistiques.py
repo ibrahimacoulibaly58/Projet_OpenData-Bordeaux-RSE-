@@ -10,9 +10,12 @@ def display_companies_by_sector(df):
     sector_counts = df['libelle_section_naf'].value_counts().reset_index()
     sector_counts.columns = ['Secteur', 'Nombre']
     fig = px.bar(sector_counts, x='Secteur', y='Nombre',
-                 color='Nombre', labels={'Nombre':'Nombre d\'entreprises'}, template='plotly_white')
+                 color='Nombre', labels={'Nombre': ''}, template='plotly_white')
     fig.update_layout(xaxis_tickangle=-45, showlegend=False)
+    # Assurez-vous que la légende est désactivée
+    fig.update_traces(showlegend=False)
     st.plotly_chart(fig)
+
 
 def display_company_sizes(df):
     fig = px.histogram(df, x='tranche_effectif_entreprise',
