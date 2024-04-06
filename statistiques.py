@@ -50,6 +50,10 @@ def main():
     data, _ = get_data()
     df = pd.DataFrame(data)
     
-
+ if not df.empty:
+        display_companies_by_sector(df)
+        display_company_sizes(df)
+        display_rse_actions_wordcloud(df)
+        
 if __name__ == "__main__":
     main()
