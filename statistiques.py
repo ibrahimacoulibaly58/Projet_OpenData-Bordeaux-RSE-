@@ -5,7 +5,7 @@ import plotly.express as px
 from data_manager import get_data
 
 def display_companies_by_sector(df):
-    sector_counts = df['Section NAF'].value_counts().reset_index()
+    sector_counts = df['Libellé groupe NAF'].value_counts().reset_index()
     sector_counts.columns = ['Secteur', 'Nombre']
     fig = px.bar(sector_counts, x='Secteur', y='Nombre', title="Répartition des entreprises par secteur d'activité",
                  color='Nombre', labels={'Nombre':'Nombre d\'entreprises'}, template='plotly_white')
