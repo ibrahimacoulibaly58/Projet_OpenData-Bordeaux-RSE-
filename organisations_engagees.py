@@ -1,28 +1,42 @@
+import streamlit as st
+import pandas as pd
 import requests
-import folium
-from streamlit_folium import folium_static
 
 def get_data():
     url = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=met_etablissement_rse&q=&rows=100"
-    response = requests.get(url)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Cela va déclencher une exception pour les réponses non-200
         data = response.json()
         records = data.get("records", [])
-        return [record.get("fields") for record in records]
-    else:
+        if records:
+            return [record.get("fields") for record in records]
+        else:
+            st.error("Aucun enregistrement trouvé dans les données de l'API.")
+            return []
+    except requests.RequestException as e:
+        st.error(f"Erreur lors de la récupération des données de l'API: {e}")
         return []
 
-def display_map(data):
-    m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
-    for item in data:
-        point_geo = item.get('point_geo')
-        if isinstance(point_geo, dict):
-            lon = point_geo.get('lon')
-            lat = point_geo.get('lat')
-            if lon and lat:
-                folium.Marker(
-                    [lat, lon],
-                    icon=folium.Icon(color="green", icon="leaf"),
-                    popup=item.get('nom_courant_denomination', 'Information non disponible'),
-                ).add_to(m)
-    folium_static(m)
+def display_organisations_engagees():
+    st.markdown("## OPEN DATA RSE")
+    st.markdown("### Découvrez les organisations engagées RSE de la métropole de Bordeaux")
+    
+    data = get_data()
+    if data:
+        num_etablissements = len(data)
+        st.markdown(f"Nombre d'établissements : {num_etablissements}")
+        df = pd.DataFrame(data)
+        df = df[['nom_courant_denomination', 'commune', 'libelle_section_naf', 'tranche_effectif_entreprise', 'action_rse']].rename(columns={
+            'nom_courant_denomination': 'Nom',
+            'commune': 'Commune',
+            'libelle_section_naf': 'Section NAF',
+            'tranche_effectif_entreprise': 'Effectif',
+            'action_rse': 'Action RSE'
+        })
+        st.dataframe(df)
+    else:
+        st.error("Données OPEN DATA RSE Bordeaux non disponibles actuellement. Veuillez vous reconnecter ultérieurement.")
+
+if __name__ == "__main__":
+    display_organisations_engagees()
