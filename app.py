@@ -80,7 +80,7 @@ def classify_rse_actions(descriptions):
 # Nouvelle fonction pour l'onglet de classification RSE
 def display_rse_categorizer():
     st.header("Classification des Actions RSE")
-    st.write("Cet outil classe les actions RSE des entreprises selon les normes ISO 26000.")
+    st.write("Cet outil classe les actions RSE des entreprises selon les critères de la norme ISO 26000.")
     
     data, _ = get_data()
     if data:
@@ -93,14 +93,14 @@ def display_rse_categorizer():
 
 # Main function orchestrating the app UI
 def main():
-    st.sidebar.title("Navigation")
-    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "GeoRSE Insights", "Classification RSE"])
+    st.sidebar.title("Découvrir")
+    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisation", "Type d'actions RSE"])
 
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
-    elif app_mode == "GeoRSE Insights":
+    elif app_mode == "Localisation":
         display_geo_rse_insights()
-    elif app_mode == "Classification RSE":
+    elif app_mode == "Type d'actions RSE":
         display_rse_categorizer()
 
 if __name__ == "__main__":
