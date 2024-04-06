@@ -2,9 +2,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import matplotlib.pyplot as plt
 from data_manager import get_data
 from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
 
 def display_companies_by_sector(df):
     sector_counts = df['libelle_section_naf'].value_counts().reset_index()
@@ -20,12 +20,22 @@ def display_company_sizes(df):
     fig.update_traces(marker_color='green')
     st.plotly_chart(fig)
 
+def display_companies_by_commune(df):
+    commune_counts = df['commune'].value_counts(normalize=True).reset_index()
+    commune_counts.columns = ['Commune', 'Pourcentage']
+    fig = px.pie(commune_counts, values='Pourcentage', names='Commune', title='Pourcentage d\'entreprises par Commune',
+                 template='plotly_white', hole=.3)
+    fig.update_traces(textinfo='percent+label')
+    st.plotly_chart(fig)
+
 def display_rse_actions_wordcloud(df):
-    st.title("Cartographie des Actions RSE")
+    st.header("Nuage de mots Actions RSE")
     
     custom_stopwords = set(["d ", "des", "qui", "ainsi", "toute", "hors", "plus", "cette", "afin", "via", "d'", "sa", "dans", "ont", "avec", "aux", "ce", "chez", "ont", "cela", "la", "un", "avons", "par", "c'est", "s'est", "aussi", "leurs", "d'un", "nos", "les", "sur", "ses", "tous", "nous", "du", "notre", "de", "et", "est", "pour", "le", "une", "se", "en", "au", "à", "que", "sont", "leur", "son"])
     stopwords = STOPWORDS.union(custom_stopwords)
+    
     text = " ".join(action for action in df['action_rse'].dropna())
+    
     wordcloud = WordCloud(stopwords=stopwords, background_color="white", width=800, height=400).generate(text)
     
     fig, ax = plt.subplots()
@@ -41,6 +51,7 @@ def main():
     if not df.empty:
         display_companies_by_sector(df)
         display_company_sizes(df)
+        display_companies_by_commune(df)
         display_rse_actions_wordcloud(df)
 
 if __name__ == "__main__":
