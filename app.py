@@ -32,15 +32,26 @@ def display_organisations_engagees():
         df = df[["Nom", "Commune", "Section NAF", "Effectif", "Action RSE"]]
         st.dataframe(df, width=None, height=None)
 
+def display_map(data):
+    m = folium.Map(location=[44.837789, -0.57918], zoom_start=12)
+    for item in data:
+        if 'latitude' in item and 'longitude' in item:
+            folium.Marker(
+                location=[item['latitude'], item['longitude']],
+                popup=item.get('Nom', 'Sans nom'),
+                icon=folium.Icon(color="green", icon="leaf")
+            ).add_to(m)
+    folium_static(m)
+
 def main():
     st.sidebar.title("Navigation")
-    app_mode = st.sidebar.radio("Choose a page", ["Home", "Organisations Engagées"])
-    
-    if app_mode == "Home":
-        st.header("Welcome to the RSE Data Explorer!")
-        st.markdown("Please select a page on the left.")
-    elif app_mode == "Organisations Engagées":
+    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisation des Entreprises"])
+
+    if app_mode == "Organisations engagées":
         display_organisations_engagees()
+    elif app_mode == "Localisation des Entreprises":
+        data, _ = get_data()
+        display_map(data)
 
 if __name__ == "__main__":
     main()
