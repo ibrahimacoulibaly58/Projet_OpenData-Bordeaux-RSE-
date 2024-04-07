@@ -1,3 +1,4 @@
+
 from folium import Map, Marker, Icon, Popup
 from streamlit_folium import folium_static
 import streamlit as st
@@ -6,7 +7,7 @@ from data_manager import get_data
 def display_map():
     data, total_hits = get_data()
     if data:
-        # Ajout des titres en haut de l'écran, similaires à organisations_engagees.py mais avec un texte personnalisé
+        # Ajout des titres en haut de l'écran
         st.markdown("## OPEN DATA RSE")
         st.markdown("### Localiser les organisations engagées RSE de Bordeaux Métropole")
         
@@ -27,9 +28,11 @@ def display_map():
                     if lat and lon:
                         popup_html = f"""
                         <div style="width:300px;">
-                            <b>{item.get('nom_courant_denomination', 'Sans nom')}</b><br>
+                            <b>{item.get('nom_courant_denomination', 'Sans nom')}</b><br><br>
                             <b>Action RSE:</b><br>
-                            {item.get('action_rse', 'Non spécifiée')}
+                            {item.get('action_rse', 'Non spécifiée')}<br><br><br>
+                            <b>Secteur d'activité:</b> {item.get('libelle_section_naf', 'Non spécifié')}<br>
+                            <b>Taille de l'entreprise:</b> {item.get('tranche_effectif_entreprise', 'Non spécifiée')}
                         </div>
                         """
                         popup = Popup(popup_html, max_width=500)
