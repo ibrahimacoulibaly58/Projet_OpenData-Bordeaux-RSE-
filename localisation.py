@@ -30,9 +30,9 @@ def display_map():
                         <div style="width:300px;">
                             <b>{item.get('nom_courant_denomination', 'Sans nom')}</b><br><br>
                             <b>Action RSE:</b><br>
-                            {item.get('action_rse', 'Non spécifiée')}<br><br><br>
-                            <b>Secteur d'activité:</b> {item.get('libelle_section_naf', 'Non spécifié')}<br>
-                            <b>Taille de l'entreprise:</b> {item.get('tranche_effectif_entreprise', 'Non spécifiée')}
+                            {item.get('action_rse', 'Non spécifiée')}<br><br>
+                            <hr style="margin: 1px 0; border: none; border-top: 1px solid #ccc;">
+                            <b>Secteur d'activité:</b> {item.get('libelle_section_naf', 'Non spécifié')}
                         </div>
                         """
                         popup = Popup(popup_html, max_width=500)
