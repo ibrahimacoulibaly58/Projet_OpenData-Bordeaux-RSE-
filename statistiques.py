@@ -17,7 +17,7 @@ def display_companies_by_sector(df):
 
 def display_company_sizes(df):
     fig = px.histogram(df, x='tranche_effectif_entreprise',
-                       labels={'tranche_effectif_entreprise':'Taille de l\\'entreprise', 'count':'Nombre'}, template='plotly_white')
+                       labels={'tranche_effectif_entreprise':"Taille de l'entreprise", 'count':'Nombre'}, template='plotly_white')
     fig.update_traces(marker_color='green')
     fig.update_layout(yaxis_title="Nombre")
     st.plotly_chart(fig)
