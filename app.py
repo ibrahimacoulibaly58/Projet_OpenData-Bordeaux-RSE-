@@ -2,12 +2,12 @@ import streamlit as st
 from organisations_engagees import display_organisations_engagees
 from localisation import display_map
 from statistiques import main as display_statistics
-
+from actionsRSE import display_actions_rse
 
 # Main function orchestrating the app UI
 def main():
     st.sidebar.title("Open Data RSE Bordeaux Métropole")
-    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisations", "Statistiques"])
+    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisations", "Statistiques", "Actions RSE"])
 
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
@@ -15,7 +15,8 @@ def main():
         display_map()
     elif app_mode == "Statistiques":
         display_statistics()
-
+    elif app_mode == "Actions RSE":
+        display_actions_rse()
 
   # Après toutes les autres instructions dans votre barre latérale :
     st.sidebar.markdown("---")  # Ajoute une ligne de séparation visuelle
