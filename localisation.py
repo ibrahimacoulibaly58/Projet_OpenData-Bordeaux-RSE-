@@ -6,15 +6,16 @@ from data_manager import get_data
 def display_map():
     data, total_hits = get_data()
     if data:
-        # Ajout du filtre par secteur d'activité en haut de l'écran
+        # Ajout des titres en haut de l'écran, similaires à organisations_engagees.py mais avec un texte personnalisé
+        st.markdown("## OPEN DATA RSE")
+        st.markdown("### Localiser les organisations engagées RSE de Bordeaux Métropole")
+        
         secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
         secteur_selectionne = st.selectbox("Filtre par secteur d'activité :", ["Tous"] + secteurs)
         
-        # Filtrage des données basé uniquement sur le secteur sélectionné
         if secteur_selectionne != "Tous":
             data = [record for record in data if record.get("libelle_section_naf") == secteur_selectionne]
         
-        # Message au-dessus de la carte
         st.markdown("Cliquer sur l'icône pour découvrir l'entreprise et une de ses actions RSE remarquable")
         
         m = Map(location=[44.84474, -0.60711], zoom_start=12)
