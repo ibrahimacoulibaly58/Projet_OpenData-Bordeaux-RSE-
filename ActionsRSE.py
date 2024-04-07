@@ -1,3 +1,4 @@
+
 import streamlit as st
 import data_manager
 
@@ -6,9 +7,9 @@ def display_actions_rse():
     data, total_hits = data_manager.get_data()
     
     if total_hits > 0:
-        # Extraction des noms d'entreprises et des secteurs pour les options de filtre
-        noms_entreprises = sorted({record.get("Nom courant/Dénomination") for record in data})
-        secteurs = sorted({record.get("Libellé section NAF") for record in data})
+        # Correction des clés pour correspondre à celles des données
+        noms_entreprises = sorted({record.get("nom_entreprise") for record in data if record.get("nom_entreprise")})
+        secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
         
         # Interface utilisateur pour les filtres
         entreprises_selectionnees = st.multiselect("Filtre par nom d'entreprise :", noms_entreprises)
@@ -17,14 +18,15 @@ def display_actions_rse():
         # Filtrage des actions RSE
         actions_filtrees = [
             record for record in data
-            if (record.get("Nom courant/Dénomination") in entreprises_selectionnees or not entreprises_selectionnees)
-            and (record.get("Libellé section NAF") in secteurs_selectionnes or not secteurs_selectionnes)
+            if (record.get("nom_entreprise") in entreprises_selectionnees or not entreprises_selectionnees)
+            and (record.get("libelle_section_naf") in secteurs_selectionnes or not secteurs_selectionnes)
         ]
         
         # Affichage des actions RSE filtrées
         if actions_filtrees:
             for action in actions_filtrees:
-                st.write(f"Entreprise: {action.get('nom_entreprise')}, Action: {action.get('description_action_rse')}")
+                # Assurez-vous que les clés utilisées ici sont correctes
+                st.write(f"Entreprise: {action.get('nom_entreprise')}, Action: {action.get('action_rse')}")
         else:
             st.write("Aucune action RSE correspondante trouvée.")
     else:
