@@ -1,4 +1,4 @@
-# statistiques.py
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -12,14 +12,12 @@ def display_companies_by_sector(df):
     fig = px.bar(sector_counts, x='Secteur', y='Nombre',
                  color='Nombre', labels={'Nombre': ''}, template='plotly_white')
     fig.update_layout(xaxis_tickangle=-45, showlegend=False)
-    # Assurez-vous que la légende est désactivée
     fig.update_traces(showlegend=False)
     st.plotly_chart(fig)
 
-
 def display_company_sizes(df):
     fig = px.histogram(df, x='tranche_effectif_entreprise',
-                       labels={'tranche_effectif_entreprise':'Taille de l\'entreprise', 'count':'Nombre'}, template='plotly_white')
+                       labels={'tranche_effectif_entreprise':'Taille de l\\'entreprise', 'count':'Nombre'}, template='plotly_white')
     fig.update_traces(marker_color='green')
     fig.update_layout(yaxis_title="Nombre")
     st.plotly_chart(fig)
@@ -53,6 +51,9 @@ def main():
     df = pd.DataFrame(data)
     
     if not df.empty:
+        st.markdown("## OPEN DATA RSE")
+        st.markdown("### Statistiques sur les entreprises engagées RSE")
+        
         st.header("Répartition des entreprises par secteur d'activité")
         display_companies_by_sector(df)
         st.header("Distribution des tailles d'entreprises")
