@@ -8,7 +8,7 @@ def display_actions_rse():
     
     if total_hits > 0:
         # Correction des clés pour correspondre à celles des données
-        noms_entreprises = sorted({record.get("nom_entreprise") for record in data if record.get("nom_entreprise")})
+        noms_entreprises = sorted({record.get("nom_courant_denomination") for record in data if record.get("nom_courant_denomination")})
         secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
         
         # Interface utilisateur pour les filtres
@@ -18,7 +18,7 @@ def display_actions_rse():
         # Filtrage des actions RSE
         actions_filtrees = [
             record for record in data
-            if (record.get("nom_entreprise") in entreprises_selectionnees or not entreprises_selectionnees)
+            if (record.get("nom_courant_denomination") in entreprises_selectionnees or not entreprises_selectionnees)
             and (record.get("libelle_section_naf") in secteurs_selectionnes or not secteurs_selectionnes)
         ]
         
@@ -26,7 +26,7 @@ def display_actions_rse():
         if actions_filtrees:
             for action in actions_filtrees:
                 # Assurez-vous que les clés utilisées ici sont correctes
-                st.write(f"Entreprise: {action.get('nom_entreprise')}, Action: {action.get('action_rse')}")
+                st.write(f"Entreprise: {action.get('nom_courant_denomination')}, Action: {action.get('action_rse')}")
         else:
             st.write("Aucune action RSE correspondante trouvée.")
     else:
