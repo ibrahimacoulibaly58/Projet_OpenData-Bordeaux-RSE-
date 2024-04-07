@@ -4,8 +4,16 @@ import streamlit as st
 from data_manager import get_data
 
 def display_map():
-    data, total_hits = get_data()  # Assurez-vous que get_data() retourne également total_hits
+    data, total_hits = get_data()
     if data:
+        # Ajout du filtre par secteur d'activité en haut de l'écran
+        secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
+        secteur_selectionne = st.selectbox("Filtre par secteur d'activité :", ["Tous"] + secteurs)
+        
+        # Filtrage des données basé uniquement sur le secteur sélectionné
+        if secteur_selectionne != "Tous":
+            data = [record for record in data if record.get("libelle_section_naf") == secteur_selectionne]
+        
         # Message au-dessus de la carte
         st.markdown("Cliquer sur l'icône pour découvrir l'entreprise et une de ses actions RSE remarquable")
         
@@ -29,9 +37,6 @@ def display_map():
                 continue
         
         folium_static(m)
-        
-        # Message et nombre d'organisations en dessous de la carte
-        st.markdown(f"* Nombre d'organisations : {total_hits}")
 
 if __name__ == "__main__":
     display_map()
