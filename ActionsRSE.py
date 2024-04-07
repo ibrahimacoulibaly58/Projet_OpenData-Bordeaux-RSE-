@@ -7,25 +7,20 @@ def display_actions_rse():
     data, total_hits = data_manager.get_data()
     
     if total_hits > 0:
-        # Correction des clés pour correspondre à celles des données
-        noms_entreprises = sorted({record.get("nom_courant_denomination") for record in data if record.get("nom_courant_denomination")})
         secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
-        
-        # Interface utilisateur pour les filtres - Transformation en choix unique
-        entreprise_selectionnee = st.selectbox("Filtre par nom d'entreprise :", ["Tous"] + noms_entreprises)
         secteur_selectionne = st.selectbox("Filtre par secteur d'activité :", ["Tous"] + secteurs)
         
-        # Filtrage des actions RSE
+        # Filtrage des actions RSE basé uniquement sur le secteur sélectionné
         actions_filtrees = [
             record for record in data
-            if (record.get("nom_courant_denomination") == entreprise_selectionnee or entreprise_selectionnee == "Tous")
-            and (record.get("libelle_section_naf") == secteur_selectionne or secteur_selectionne == "Tous")
+            if record.get("libelle_section_naf") == secteur_selectionne or secteur_selectionne == "Tous"
         ]
         
         # Affichage des actions RSE filtrées
         if actions_filtrees:
             for action in actions_filtrees:
-                st.write(f"Entreprise: {action.get('nom_courant_denomination')}, Action: {action.get('action_rse')}")
+                # Utilisation de Markdown pour l'affichage enrichi, incluant le gras
+                st.markdown(f":green_heart: **Entreprise**: {action.get('nom_courant_denomination')}\n\n**Action**: {action.get('action_rse')}", unsafe_allow_html=True)
         else:
             st.write("Aucune action RSE correspondante trouvée.")
     else:
