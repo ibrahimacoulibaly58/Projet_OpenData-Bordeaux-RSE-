@@ -7,6 +7,10 @@ def display_actions_rse():
     data, total_hits = data_manager.get_data()
     
     if total_hits > 0:
+        # Ajout des titres en haut de l'écran, similaires à organisations_engagees.py mais avec un texte personnalisé
+        st.markdown("## OPEN DATA RSE")
+        st.markdown("### Découvrer les actions RSE des organisations engagées de Bordeaux Métropole")
+        
         secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
         secteur_selectionne = st.selectbox("Filtre par secteur d'activité :", ["Tous"] + secteurs)
         
