@@ -46,7 +46,6 @@ def display_rse_actions_wordcloud(df):
     st.pyplot(fig)
 
 def main():
-    st.title("Statistiques sur les entreprises engagées RSE")
     data, _ = get_data()
     df = pd.DataFrame(data)
     
