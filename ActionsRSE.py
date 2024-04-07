@@ -7,8 +7,8 @@ def display_actions_rse():
     
     if total_hits > 0:
         # Extraction des noms d'entreprises et des secteurs pour les options de filtre
-        noms_entreprises = sorted({record.get("nom_entreprise") for record in data})
-        secteurs = sorted({record.get("secteur_activite") for record in data})
+        noms_entreprises = sorted({record.get("Nom courant/Dénomination") for record in data})
+        secteurs = sorted({record.get("Libellé section NAF") for record in data})
         
         # Interface utilisateur pour les filtres
         entreprises_selectionnees = st.multiselect("Filtre par nom d'entreprise :", noms_entreprises)
@@ -17,8 +17,8 @@ def display_actions_rse():
         # Filtrage des actions RSE
         actions_filtrees = [
             record for record in data
-            if (record.get("nom_entreprise") in entreprises_selectionnees or not entreprises_selectionnees)
-            and (record.get("secteur_activite") in secteurs_selectionnes or not secteurs_selectionnes)
+            if (record.get("Nom courant/Dénomination") in entreprises_selectionnees or not entreprises_selectionnees)
+            and (record.get("Libellé section NAF") in secteurs_selectionnes or not secteurs_selectionnes)
         ]
         
         # Affichage des actions RSE filtrées
