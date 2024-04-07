@@ -7,7 +7,7 @@ from ActionsRSE import display_actions_rse
 # Main function orchestrating the app UI
 def main():
     st.sidebar.title("Open Data RSE Bordeaux Métropole")
-    app_mode = st.sidebar.radio("Choisissez l'onglet", ["Organisations engagées", "Localisations", "Statistiques", "Actions RSE"])
+    app_mode = st.sidebar.radio("Choisissez votre onglet", ["Organisations engagées", "Localisations", "Statistiques", "Actions RSE"])
 
     if app_mode == "Organisations engagées":
         display_organisations_engagees()
