@@ -2,7 +2,7 @@ import streamlit as st
 from organisations_engagees import display_organisations_engagees
 from localisation import display_map
 from statistiques import main as display_statistics
-from actionsRSE import display_actions_rse
+from ActionsRSE import display_actions_rse
 
 # Main function orchestrating the app UI
 def main():
