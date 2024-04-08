@@ -5,6 +5,8 @@ from statistiques import main as display_statistics
 from ActionsRSE import display_actions_rse
 
 # Import des fonctions IA depuis le sous-répertoire
+from IA_RSE.analyseActionsRSE import display_analyse_actions_rse
+
 # from IA_COMMERCE.Doc_Ref_COMMERCE import display_doc_ref_commerce
 # from IA_COMMERCE.BP_COMMERCE import display_bp_commerce
 # from IA_COMMERCE.Financement_TE_COMMERCE import display_Financement_TE_Commerce
@@ -44,6 +46,14 @@ def main():
 #            display_Financement_TE_Commerce()
 #        elif ia_mode == "Dialogue IA":
 #            display_ia_commerce()
+
+    elif section_principale == "IA RSE":
+        ia_mode = st.sidebar.radio(
+            "Choisissez votre onglet",
+            ["Analyse actions RSE"]
+        )
+        if ia_mode == "Documents Référence":
+           display_analyse_action_rse()
 
     # Instructions communes à toutes les sections
     st.sidebar.markdown("---")
