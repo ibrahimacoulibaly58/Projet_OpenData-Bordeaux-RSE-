@@ -52,7 +52,7 @@ def main():
             "Choisissez votre onglet",
             ["Analyse actions RSE"]
         )
-        if ia_mode == "Documents Référence":
+        if ia_mode == "Analyse actions RSE":
            display_analyse_action_rse()
 
     # Instructions communes à toutes les sections
