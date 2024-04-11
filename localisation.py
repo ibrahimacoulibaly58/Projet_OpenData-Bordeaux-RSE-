@@ -8,7 +8,7 @@ def display_map():
     data, total_hits = get_data()
     if data:
         # Ajout des titres en haut de l'écran
-        st.markdown("## OPEN DATA RSE")
+        st.markdown("## OPEN DATA Bordeaux Métropole RSE")
         st.markdown("### Localiser les organisations engagées RSE de Bordeaux Métropole")
         
         secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})

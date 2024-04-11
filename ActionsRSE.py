@@ -1,4 +1,3 @@
-
 import streamlit as st
 import data_manager
 
@@ -8,7 +7,7 @@ def display_actions_rse():
     
     if total_hits > 0:
         # Ajout des titres en haut de l'écran, similaires à organisations_engagees.py mais avec un texte personnalisé
-        st.markdown("## OPEN DATA RSE")
+        st.markdown("## OPEN DATA Bordeaux Métropole RSE")
         st.markdown("### Découvrer les actions RSE des organisations engagées de Bordeaux Métropole")
         
         secteurs = sorted({record.get("libelle_section_naf") for record in data if record.get("libelle_section_naf")})
@@ -27,5 +26,9 @@ def display_actions_rse():
                 st.markdown(f":green_heart: **Entreprise**: {action.get('nom_courant_denomination')}\n\n**Action**: {action.get('action_rse')}", unsafe_allow_html=True)
         else:
             st.write("Aucune action RSE correspondante trouvée.")
+        
+        # Afficher le total des actions RSE
+        st.markdown(f"**Total des actions RSE :** {len(actions_filtrees)}")
+        
     else:
         st.write("Erreur lors de la récupération des données.")

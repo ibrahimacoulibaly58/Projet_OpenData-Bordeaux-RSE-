@@ -50,7 +50,7 @@ def main():
     df = pd.DataFrame(data)
     
     if not df.empty:
-        st.markdown("## OPEN DATA RSE")
+        st.markdown("## OPEN DATA Bordeaux Métropole RSE")
         st.markdown("### Statistiques sur les entreprises engagées RSE")
         
         st.header("Répartition des entreprises par secteur d'activité")

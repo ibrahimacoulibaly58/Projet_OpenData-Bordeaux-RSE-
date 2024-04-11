@@ -1,4 +1,4 @@
-# data_manager.py
+
 import requests
 
 def get_data():
