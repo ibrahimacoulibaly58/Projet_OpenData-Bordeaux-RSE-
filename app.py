@@ -7,17 +7,23 @@ from localisation import display_map
 from statistiques import main as display_statistics
 from ActionsRSE import display_actions_rse
 from AnalyseActionsRSE import display_analyse_actions_rse
+from partiesprenantes import display_materiality_partiesprenantes
 
 # Import modifiédes fonctions liées aux scripts
 from projetRSE import display_rse_projects
 from labelRSE import display_rse_labels
-from marquesengagees import display_engaged_brands
+from entreprises_labellisees import display_labelled_companies
+from inspirezvous import *
+from collaborons import display_company_selection_for_materiality,display_materiality_matrix
+from documentations import display_documentation
 
 def main():
+    st.markdown(":point_left: Cliquez pour vous inspirer", unsafe_allow_html=True)
+ 
     st.sidebar.title("OPEN DATA & IA au service de la RSE")
     section_principale = st.sidebar.radio(
         "Choisissez votre section",
-        ["Data Bordeaux métropole", "Data bziiit"]
+        ["Data Bordeaux métropole", "Data bziiit","IA RSE","Documentation"]
     )
 
     if section_principale == "Data Bordeaux métropole":
@@ -36,15 +42,41 @@ def main():
         elif app_mode == "Analyse actions RSE":
             display_analyse_actions_rse()
 
+  
     elif section_principale == "Data bziiit":
         ia_mode = st.sidebar.radio(
             "Choisissez votre sous-section",
-            ["Labels RSE", "Projets RSE"]
+            ["Labels RSE", "Entreprises labellisées", "Fiches entreprises"]
         )
         if ia_mode == "Labels RSE":
             display_rse_labels()
-        elif ia_mode == "Projets RSE":
-            display_rse_projects()
+        elif ia_mode == "Entreprises labellisées":
+            display_labelled_companies()
+        elif ia_mode == "Fiches entreprises":
+            data, bziiit_data = fetch_data()
+            selected_company = display_company_selection(data)
+            display_company_info(data, bziiit_data, selected_company)
+ 
+    elif section_principale == "IA RSE":
+        ia_mode = st.sidebar.radio(
+            "Choisissez votre sous-section",
+            ["Parties prenantes", "Matrice de matérialité"]
+        )
+        if ia_mode == "Parties prenantes":
+            data, bziiit_data = fetch_data()
+            selected_company = display_company_selection_for_materiality(data)
+            if selected_company:
+                display_materiality_partiesprenantes(selected_company, data, bziiit_data)
+        elif ia_mode == "Matrice de matérialité":
+            data, bziiit_data = fetch_data()
+            selected_company = display_company_selection_for_materiality(data)
+            if selected_company:
+                display_materiality_matrix(selected_company, data, bziiit_data)
+
+
+    elif section_principale == "Documentation":
+            display_documentation()
+
 
     # Instructions communes à toutes les sections
     st.sidebar.markdown("---")

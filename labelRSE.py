@@ -10,12 +10,14 @@ def display_rse_labels():
 
     labels_option = st.radio(
         "Choisissez les labels à afficher :",
-        ("Tous les labels / Certifications DATA bziiit", "Labels / Certifications des organisations engagées Bdx Métropole")
+        ("Labels / Certifications des organisations engagées Bdx Métropole", "Tous les labels / Certifications DATA bziiit")
     )
 
+    
     st.markdown("""<hr style='border-color: darkgrey;'>""", unsafe_allow_html=True)
 
     labels = get_labels()
+   
     if labels_option == "Tous les labels / Certifications DATA bziiit":
         labels.sort(key=lambda x: x['name'])
     else:
