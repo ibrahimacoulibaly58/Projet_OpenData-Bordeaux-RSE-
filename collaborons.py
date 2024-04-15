@@ -1,11 +1,15 @@
 import streamlit as st
-from openai import OpenAI
 from folium import Map, Marker, Icon, Popup
 from streamlit_folium import folium_static
 from data_manager import get_data
 from data_manager_bziiit import *
 from ISO26000 import classify_actions_rse_ISO26000
 from urllib.parse import urlparse
+
+import os
+import openai
+
+openai.api_key = os.getenv('API_TOKEN_PERPLEXITYAI')
 
 ###############################################################################################
 # PARTIE 0 : Récupération des données API bziiit et Bordeaux Métropole
@@ -49,8 +53,8 @@ def normalize_company_name(record):
 ###############################################################################################
 
 def perform_chat(messages):
-    YOUR_API_KEY = st.secrets["API_TOKEN_PERPLEXITYAI"]
-    client = OpenAI(api_key=YOUR_API_KEY, base_url="https://api.perplexity.ai")
+    YOUR_API_KEY = os.getenv("API_TOKEN_PERPLEXITYAI")
+    client = openai.OpenAI(api_key=YOUR_API_KEY, base_url="https://api.perplexity.ai")
 
     response_stream = client.chat.completions.create(
         model="mixtral-8x7b-instruct",
