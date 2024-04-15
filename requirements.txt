@@ -11,4 +11,4 @@ wordcloud
 plotly
 matplotlib
 openai
-
+beautifulsoup4
