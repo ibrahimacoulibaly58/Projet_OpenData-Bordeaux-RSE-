@@ -4,12 +4,9 @@ from streamlit_folium import folium_static
 from data_manager import get_data
 from data_manager_bziiit import *
 
-import openai
-
 import os
-
-
-openai.api_key = os.getenv('API_TOKEN_PERPLEXITYAI')
+from dotenv import load_dotenv
+import openai
 
 ###############################################################################################
 # PARTIE 0 : Récupération des données API bziiit et Bordeaux Métropole
@@ -52,8 +49,13 @@ def normalize_company_name(record):
 # PARTIE 3 : CONNEXION API sonar-medium-online + AFFICHAGE DE LA CONVERSATION
 ###############################################################################################
 
+# chargement du fichier .env
+load_dotenv(".streamlit/.env")
+
 def perform_chat(messages):
     YOUR_API_KEY = os.getenv("API_TOKEN_PERPLEXITYAI")
+    if YOUR_API_KEY is None:
+        raise Exception("API key not found. Please check your .env configuration.")
     client = openai.OpenAI(api_key=YOUR_API_KEY, base_url="https://api.perplexity.ai")
 
     response_stream = client.chat.completions.create(
